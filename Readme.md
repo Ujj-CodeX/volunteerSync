@@ -69,13 +69,10 @@ EMAIL_HOST_PASSWORD = 'your_app_password'
 
 Generate Gmail App Password from: Google Account → Security → 2FA → App Passwords
 
----
 
-## 📸 Screenshots
 
-> Admin Dashboard, Volunteer Dashboard, Raise Request Form, Notifications
 
----
+
 
 ## 👨‍💻 Built By
 
