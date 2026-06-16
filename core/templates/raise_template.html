@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row mb-4">
+    <div class="col">
+        <h4 class="fw-bold text-dark">Raise Volunteering Request</h4>
+        <p class="text-muted">Fill in the details to notify volunteers in your region</p>
+    </div>
+    <div class="col-auto">
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back
+        </a>
+    </div>
+</div>
+
+<div class="card p-4" style="max-width:650px;">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Title</label>
+            <input type="text" name="title" class="form-control" placeholder="e.g. Blood Donation Camp" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Description</label>
+            <textarea name="description" class="form-control" rows="4" placeholder="Describe the volunteering activity..." required></textarea>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">Region</label>
+                <input type="text" name="region" class="form-control" placeholder="e.g. Lucknow" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">Area</label>
+                <input type="text" name="area" class="form-control" placeholder="e.g. Hazratganj" required>
+            </div>
+        </div>
+        <div class="mb-4">
+            <label class="form-label fw-semibold">Participation Deadline</label>
+            <input type="date" name="deadline" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary px-5">
+            <i class="fas fa-paper-plane me-2"></i>Raise & Notify Volunteers
+        </button>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row mb-4">
+    <div class="col">
+        <h4 class="fw-bold text-dark">Volunteer Dashboard</h4>
+        <p class="text-muted">View and respond to volunteering requests</p>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card p-4 text-center">
+            <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+            <h2 class="fw-bold">{{ total_accepted }}</h2>
+            <p class="text-muted mb-0">Requests Accepted</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 text-center">
+            <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+            <h2 class="fw-bold">{{ pending.count }}</h2>
+            <p class="text-muted mb-0">Pending Requests</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 text-center">
+            <i class="fas fa-bell fa-2x text-primary mb-2"></i>
+            <h2 class="fw-bold">{{ notifications.count }}</h2>
+            <p class="text-muted mb-0">Unread Notifications</p>
+        </div>
+    </div>
+</div>
+
+<!-- Pending Requests -->
+<div class="card p-4 mb-4">
+    <h5 class="fw-bold mb-3">Pending Requests</h5>
+    {% if pending %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Title</th>
+                    <th>Region</th>
+                    <th>Area</th>
+                    <th>Deadline</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in pending %}
+                <tr>
+                    <td class="fw-semibold">{{ r.title }}</td>
+                    <td>{{ r.region }}</td>
+                    <td>{{ r.area }}</td>
+                    <td>{{ r.deadline }}</td>
+                    <td>
+                        <a href="{% url 'respond_request' r.pk %}" 
+                           class="btn btn-sm btn-primary">
+                            <i class="fas fa-reply me-1"></i>Respond
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center py-4 text-muted">
+        <i class="fas fa-check-double fa-3x mb-3"></i>
+        <p>No pending requests. You're all caught up!</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- My Responses -->
+<div class="card p-4">
+    <h5 class="fw-bold mb-3">My Responses</h5>
+    {% if my_responses %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Title</th>
+                    <th>Region</th>
+                    <th>Deadline</th>
+                    <th>My Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in my_responses %}
+                <tr>
+                    <td class="fw-semibold">{{ r.request.title }}</td>
+                    <td>{{ r.request.region }}</td>
+                    <td>{{ r.request.deadline }}</td>
+                    <td>
+                        {% if r.status == 'accepted' %}
+                        <span class="badge bg-success">Accepted</span>
+                        {% else %}
+                        <span class="badge bg-danger">Unavailable</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center py-4 text-muted">
+        <i class="fas fa-inbox fa-3x mb-3"></i>
+        <p>No responses yet.</p>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

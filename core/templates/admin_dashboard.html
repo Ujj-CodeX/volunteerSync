@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row mb-4">
+    <div class="col">
+        <h4 class="fw-bold text-dark">Admin Dashboard</h4>
+        <p class="text-muted">Manage volunteering requests and track participation</p>
+    </div>
+    <div class="col-auto">
+        <a href="{% url 'raise_request' %}" class="btn btn-primary px-4">
+            <i class="fas fa-plus me-2"></i>Raise Request
+        </a>
+        <a href="{% url 'volunteer_list' %}" class="btn btn-outline-secondary ms-2 px-4">
+            <i class="fas fa-users me-2"></i>Volunteers
+        </a>
+    </div>
+</div>
+
+<!-- Stats -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card p-4 text-center">
+            <i class="fas fa-clipboard-list fa-2x text-primary mb-2"></i>
+            <h2 class="fw-bold">{{ total_raised }}</h2>
+            <p class="text-muted mb-0">Total Requests Raised</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 text-center">
+            <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+            <h2 class="fw-bold">{{ total_accepted }}</h2>
+            <p class="text-muted mb-0">Total Acceptances</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-4 text-center">
+            <i class="fas fa-bell fa-2x text-warning mb-2"></i>
+            <h2 class="fw-bold">{{ notifications.count }}</h2>
+            <p class="text-muted mb-0">Unread Notifications</p>
+        </div>
+    </div>
+</div>
+
+<!-- Requests Table -->
+<div class="card p-4">
+    <h5 class="fw-bold mb-3">Volunteering Requests</h5>
+    {% if raised %}
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Title</th>
+                    <th>Region</th>
+                    <th>Area</th>
+                    <th>Deadline</th>
+                    <th>Accepted</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in raised %}
+                <tr>
+                    <td class="fw-semibold">{{ r.title }}</td>
+                    <td>{{ r.region }}</td>
+                    <td>{{ r.area }}</td>
+                    <td>{{ r.deadline }}</td>
+                    <td>
+                        <span class="badge bg-success">
+                            {{ r.requestresponse_set.all|length }}
+                        </span>
+                    </td>
+                    <td>
+                        <a href="{% url 'raise_request' %}?view={{ r.pk }}" 
+                           class="btn btn-sm btn-outline-primary"
+                           onclick="printList({{ r.pk }}); return false;">
+                            <i class="fas fa-print me-1"></i>Print List
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center py-5 text-muted">
+        <i class="fas fa-clipboard fa-3x mb-3"></i>
+        <p>No requests raised yet. Click "Raise Request" to get started.</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Print Modal -->
+{% for r in raised %}
+<div id="print-{{ r.pk }}" style="display:none;">
+    <h3>{{ r.title }} — Accepted Volunteers</h3>
+    <p>Region: {{ r.region }} | Area: {{ r.area }} | Deadline: {{ r.deadline }}</p>
+    <ol>
+        {% for res in r.requestresponse_set.all %}
+            {% if res.status == 'accepted' %}
+            <li>{{ res.volunteer.get_full_name|default:res.volunteer.username }} — {{ res.volunteer.email }} — {{ res.volunteer.phone }}</li>
+            {% endif %}
+        {% endfor %}
+    </ol>
+</div>
+{% endfor %}
+
+<script>
+function printList(pk) {
+    const content = document.getElementById('print-' + pk).innerHTML;
+    const win = window.open('', '_blank');
+    win.document.write('<html><body>' + content + '</body></html>');
+    win.document.close();
+    win.print();
+}
+</script>
+
+{% endblock %}
